@@ -93,6 +93,17 @@ const CreateNewSale = () => {
                     required
                   />
                 </div>
+                <div className="same-row">
+                  <label className="label required">Distributor </label> <br />
+                  <input
+                    type="text"
+                    className="p-code"
+                    placeholder="Distributor"
+                    name="distibutor"
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
               </div>
               <div className="set" style={{ backgroundColor: "#092143" }}>
                 <h3 className="set-title">

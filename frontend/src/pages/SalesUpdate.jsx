@@ -14,29 +14,44 @@ const SalesUpdate = () => {
         const response = await axios.get(
           `http://localhost:8060/api/sales/getsale/${id}`
         );
-        setSalesData(response.data.data || []);
-        console.log(salesData);
+        setSalesData(response.data.data || {}); // Corrected to set an object, not an array
+        console.log("Fetched Sales Data:", response.data.data);
       } catch (error) {
         console.error("Error fetching sales:", error);
       }
     };
 
     fetchSales();
-  }, []);
+  }, [id]); // Ensure it runs only once or when `id` changes
 
-  const handleOnChange = async (e) => {
+  const handleOnChange = (e) => {
     setSalesData({ ...salesData, [e.target.name]: e.target.value });
-    console.log(salesData);
   };
 
-  const handleUpdate = () => {};
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await axios.put(
+        `http://localhost:8060/api/sales/updte/${id}`,
+        salesData
+      );
+      console.log("Update Response:", res);
+      console.log("Updated Sales Data:", salesData);
+      navigate("/dash");
+    } catch (error) {
+      console.error("Error updating sales:", error);
+      console.log("Updated Sales Data:", salesData);
+    }
+  };
+
   return (
     <div className="dashboard w-full">
       <NavigationBar />
-      <div className=" w-full">
+      <div className="w-full">
         <div className="itm-conte pt-40">
           <div className="form-back">
-            <form>
+            <form onSubmit={handleUpdate}>
               <div className="set" style={{ backgroundColor: "#092143" }}>
                 <h3 className="set-title">
                   Customer Details <hr />
@@ -46,7 +61,7 @@ const SalesUpdate = () => {
                   type="text"
                   className="p-name"
                   name="cname"
-                  value={salesData.cname}
+                  value={salesData.cname || ""}
                   onChange={handleOnChange}
                   required
                 />
@@ -56,14 +71,14 @@ const SalesUpdate = () => {
                   type="text"
                   className="p-code"
                   name="ccode"
-                  value={salesData.ccode}
+                  value={salesData.ccode || ""}
                   onChange={handleOnChange}
                   required
                 />
               </div>
               <div className="set" style={{ backgroundColor: "#092143" }}>
                 <h3 className="set-title">
-                  Genaral Details <hr />
+                  General Details <hr />
                 </h3>
 
                 <div className="same-row">
@@ -72,7 +87,7 @@ const SalesUpdate = () => {
                     type="text"
                     className="p-code"
                     name="rcode"
-                    value={salesData.rcode}
+                    value={salesData.rcode || ""}
                     onChange={handleOnChange}
                     required
                   />
@@ -81,7 +96,7 @@ const SalesUpdate = () => {
                     type="date"
                     className="i-date"
                     name="odate"
-                    value={salesData.odate}
+                    value={salesData.odate || ""}
                     onChange={handleOnChange}
                     required
                   />
@@ -90,7 +105,7 @@ const SalesUpdate = () => {
                     type="text"
                     className="p-code"
                     name="status"
-                    value={salesData.status}
+                    value={salesData.status || ""}
                     onChange={handleOnChange}
                     required
                   />
@@ -105,7 +120,7 @@ const SalesUpdate = () => {
                   type="text"
                   className="p-code"
                   name="tamount"
-                  value={salesData.tamount}
+                  value={salesData.tamount || ""}
                   onChange={handleOnChange}
                   required
                 />

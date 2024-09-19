@@ -1,5 +1,6 @@
 import salesModel from "../models/salesModell.js";
 import mongoose from "mongoose";
+import express from "express";
 
 const newsalesController = async (req, res) => {
   try {
@@ -21,7 +22,6 @@ const newsalesController = async (req, res) => {
   }
 };
 
-// Route to get all sales records
 const getallSale = async (req, res) => {
   try {
     const sales = await salesModel.find();
@@ -92,47 +92,16 @@ const deleteSale = async (req, res) => {
   }
 };
 
-const updateSale = async (req, res) => {
-  try {
-    const { status } = req.body;
-
-    const updatedSales = await salesModel.findByIdAndUpdate(
-      req.params.id,
-      { status }, // Updated data
-      { new: true } // Return updated document
-    );
-
-    if (!updatedSales) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Supplier not found", transactionID });
-    }
-
-    res.status(200).json({ success: true, data: updatedSales });
-  } catch (error) {
-    console.error("Error updating supplier:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error",
-        transactionID,
-      });
-  }
-};
-
 const upsale = async (req, res) => {
-  const { id } = req.params.id;
-  const { updatedData } = req.body;
-  const update = { status: "returned" };
-
+  const { id } = req.params;
+  const updatedData = req.body;
   try {
-    const updatedSale = await Sales.findByIdAndUpdate(id, update, {
+    const updatedItem = await salesModel.findByIdAndUpdate(id, updatedData, {
       new: true,
     });
-    res.json(updatedSale);
+    res.status(200).json(updatedItem);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Error Updating Sales Data", error });
   }
 };
 
@@ -141,7 +110,6 @@ export {
   getoneSale,
   getSalesById,
   deleteSale,
-  updateSale,
   getallSale,
   upsale,
 };
