@@ -5,9 +5,15 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const SalesUpdate = () => {
   const [salesData, setSalesData] = useState({});
+  const [minDate, setMinDate] = useState("");
   const navigate = useNavigate();
   const { id } = useParams();
 
+  useEffect(() => {
+    // Set the minimum date to today
+    const today = new Date().toISOString().split("T")[0];
+    setMinDate(today);
+  }, []);
   useEffect(() => {
     const fetchSales = async () => {
       try {
@@ -38,10 +44,13 @@ const SalesUpdate = () => {
       );
       console.log("Update Response:", res);
       console.log("Updated Sales Data:", salesData);
+      swal("Good job!", "Sale Updated Successfully!", "success");
+
       navigate("/dash");
     } catch (error) {
       console.error("Error updating sales:", error);
       console.log("Updated Sales Data:", salesData);
+      swal("Error", "Please fill out all fields correctly.", "error");
     }
   };
 
@@ -56,25 +65,51 @@ const SalesUpdate = () => {
                 <h3 className="set-title">
                   Customer Details <hr />
                 </h3>
-                <label className="label required"> Customer Name </label> <br />
-                <input
-                  type="text"
-                  className="p-name"
-                  name="cname"
-                  value={salesData.cname || ""}
-                  onChange={handleOnChange}
-                  required
-                />
-                <br /> <br />
-                <label className="label required"> Customer Code </label> <br />
-                <input
-                  type="text"
-                  className="p-code"
-                  name="ccode"
-                  value={salesData.ccode || ""}
-                  onChange={handleOnChange}
-                  required
-                />
+
+                <div className="same-row">
+                  <label className="label required">Customer Name</label> <br />
+                  <input
+                    type="text"
+                    className="p-name"
+                    placeholder="Customer Name"
+                    name="cname"
+                    onChange={handleOnChange}
+                    value={salesData.cname}
+                  />
+                  <label className="label required">Customer Phone</label>{" "}
+                  <br />
+                  <input
+                    type="text"
+                    className="p-name"
+                    placeholder="Customer Phone"
+                    name="cphone"
+                    onChange={handleOnChange}
+                    value={salesData.cphone}
+                  />
+                  {!/^(\+94\d{9}|0\d{9})$/.test(salesData.cphone) &&
+                    salesData.cphone && (
+                      <p className="text-red-500 text-xs mt-1">
+                        Please enter a valid phone number (e.g., +941111111111
+                        or 0111111111).
+                      </p>
+                    )}
+                  <label className="label required">Customer Email</label>{" "}
+                  <br />
+                  <input
+                    type="email"
+                    className="p-name"
+                    placeholder="Customer Email"
+                    name="cemail"
+                    onChange={handleOnChange}
+                    value={salesData.cemail}
+                  />
+                  {!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(salesData.cemail) &&
+                    salesData.cemail && (
+                      <p className="text-red-500 text-xs mt-1">
+                        Please enter a valid email address.
+                      </p>
+                    )}
+                </div>
               </div>
               <div className="set" style={{ backgroundColor: "#092143" }}>
                 <h3 className="set-title">
@@ -98,6 +133,7 @@ const SalesUpdate = () => {
                     name="odate"
                     value={salesData.odate || ""}
                     onChange={handleOnChange}
+                    min={minDate}
                     required
                   />
                   <label className="label required">Status </label> <br />

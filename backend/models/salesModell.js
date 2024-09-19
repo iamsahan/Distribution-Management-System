@@ -2,14 +2,17 @@ import mongoose from "mongoose";
 
 const salesSchema = new mongoose.Schema(
   {
-    distibutor: {
-      type: String,
-    },
     cname: {
       type: String,
       required: [true, "Transaction ID is Required!"],
     },
     ccode: {
+      type: String,
+    },
+    cphone: {
+      type: String,
+    },
+    cemail: {
       type: String,
     },
     rcode: {
@@ -21,6 +24,15 @@ const salesSchema = new mongoose.Schema(
     status: {
       type: String,
       default: "Pending",
+    },
+    distibutor: {
+      type: String,
+    },
+    dphone: {
+      type: String,
+    },
+    demail: {
+      type: String,
     },
     tamount: {
       type: Number,

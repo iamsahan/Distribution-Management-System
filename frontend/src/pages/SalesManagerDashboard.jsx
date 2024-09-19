@@ -2,8 +2,24 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { NavigationBar } from "../components/NavigationBar";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import SalesReportTemplate from "../components/SalesReportTemplate";
 
 const SalesDashboard = () => {
+  const data = [
+    {
+      id: 12,
+      name: "Cargills",
+    },
+    {
+      id: 13,
+      name: "Keels",
+    },
+    {
+      id: 14,
+      name: "Arpico",
+    },
+  ];
   const [sales, setSales] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [searchDistributor, setSearchDistributor] = useState("");
@@ -117,6 +133,36 @@ const SalesDashboard = () => {
       style={{ backgroundColor: "#6b94b2" }}
     >
       <NavigationBar />
+      <div className="fixed mt-20 min-w-full">
+        <nav
+          className="p-4 flex justify-between items-center"
+          style={{ backgroundColor: "#10538a" }}
+        >
+          <ul className="flex space-x-4">
+            <li>Dashboard</li>
+            <li>Customer</li>
+            <li>Promotion</li>
+            <li>Order</li>
+            <li>Inventory</li>
+            <li>Sales</li>
+            <li>Return</li>
+            <li>Complain</li>
+          </ul>
+          <div>
+            <PDFDownloadLink
+              document={<SalesReportTemplate salesList={filteredSales} />}
+              fileName="repair_estimate.pdf"
+              className="bg-lime-500 text-black mr-5 px-4 py-2 rounded-md shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
+            >
+              {({ loading }) => (loading ? "Loading PDF..." : "Download PDF")}
+            </PDFDownloadLink>
+            <a className="bg-gray-500 p-2 rounded-lg" href="/addSale">
+              Add New Sale
+            </a>
+          </div>
+        </nav>
+      </div>
+
       <div className="flex w-full">
         <main className="w-full mt-40">
           <div
@@ -163,12 +209,18 @@ const SalesDashboard = () => {
               </div>
               <div>
                 <label>Customer:</label>
-                <input
-                  type="text"
+                <select
                   className="w-full p-2 text-black"
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
-                />
+                >
+                  <option value="">Select Customer</option>
+                  {data.map((customer) => (
+                    <option key={customer.id} value={customer.name}>
+                      {customer.name}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label>Sales No:</label>
@@ -216,7 +268,7 @@ const SalesDashboard = () => {
                   <tr key={sales._id} className=" w-fit">
                     <td className="p-4">{sales._id}</td>
                     <td className="p-4">{sales.odate}</td>
-                    <td className="p-4">{sales.ccode}</td>
+                    <td className="p-4">{sales.distibutor}</td>
                     <td className="p-4">{sales.cname}</td>
                     <td className="p-4">{sales.rcode}</td>
                     <td className="p-4">{sales.tamount}</td>
@@ -227,7 +279,7 @@ const SalesDashboard = () => {
                         className="bg-gray-500 p-1 m-1 rounded-lg"
                         href={`/upd/${sales._id}`}
                       >
-                        Process Order
+                        Update Order
                       </a>
                     </td>
                     <td>
@@ -242,11 +294,6 @@ const SalesDashboard = () => {
                 ))}
               </tbody>
             </table>
-            <div className="flex space-x-4 mt-4">
-              <a className="bg-gray-500 p-2 rounded-lg" href="/addSale">
-                Add Order
-              </a>
-            </div>
           </div>
         </main>
       </div>
