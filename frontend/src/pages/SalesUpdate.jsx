@@ -58,7 +58,10 @@ const SalesUpdate = () => {
     <div className="dashboard w-full">
       <NavigationBar />
       <div className="w-full">
-        <div className="itm-conte pt-40">
+        <div className="itm-conte pt-20">
+          {/* <div>
+            <button onClick={() => navigate(-1)}>Back</button>
+          </div> */}
           <div className="form-back">
             <form onSubmit={handleUpdate}>
               <div className="set" style={{ backgroundColor: "#092143" }}>
@@ -163,7 +166,7 @@ const SalesUpdate = () => {
               </div>
 
               <button type="submit" className="btn btn-prd">
-                Submit
+                Update
               </button>
             </form>
           </div>

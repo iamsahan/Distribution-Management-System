@@ -179,8 +179,8 @@ const CreateNewSale = () => {
                     name="cphone"
                     value={formData.cphone}
                   />
-                  {!/^(\+94\d{9}|0\d{9})$/.test(salesData.cphone) &&
-                    salesData.cphone && (
+                  {!/^(\+94\d{9}|0\d{9})$/.test(formData.cphone) &&
+                    formData.cphone && (
                       <p className="text-red-500 text-xs mt-1">
                         Please enter a valid phone number (e.g., +941111111111
                         or 0111111111).
@@ -274,8 +274,8 @@ const CreateNewSale = () => {
                     onChange={handleChange}
                   />
                   <br />
-                  {!/^(\+94\d{9}|0\d{9})$/.test(salesData.dphone) &&
-                    salesData.dphone && (
+                  {!/^(\+94\d{9}|0\d{9})$/.test(formData.dphone) &&
+                    formData.dphone && (
                       <p className="text-red-500 text-xs mt-1">
                         Please enter a valid phone number (e.g., +941111111111
                         or 0111111111).

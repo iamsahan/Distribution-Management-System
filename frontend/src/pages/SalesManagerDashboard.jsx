@@ -4,8 +4,10 @@ import Swal from "sweetalert2";
 import { NavigationBar } from "../components/NavigationBar";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import SalesReportTemplate from "../components/SalesReportTemplate";
+import { useNavigate } from "react-router-dom";
 
 const SalesDashboard = () => {
+  const navigate = useNavigate();
   const data = [
     {
       id: 12,
@@ -151,7 +153,7 @@ const SalesDashboard = () => {
           <div>
             <PDFDownloadLink
               document={<SalesReportTemplate salesList={filteredSales} />}
-              fileName="repair_estimate.pdf"
+              fileName="sales_report.pdf"
               className="bg-lime-500 text-black mr-5 px-4 py-2 rounded-md shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md"
             >
               {({ loading }) => (loading ? "Loading PDF..." : "Download PDF")}
@@ -260,7 +262,8 @@ const SalesDashboard = () => {
                   <th className="p-2">Total Net Amount</th>
                   <th className="p-2">Status</th>
                   <th className="p-2">Update</th>
-                  <th className="p-2">Update</th>
+                  <th className="p-2">Delete</th>
+                  <th className="p-2">PickList</th>
                 </tr>
               </thead>
               <tbody>
@@ -288,6 +291,14 @@ const SalesDashboard = () => {
                         onClick={() => handleDelete(sales._id)}
                       >
                         Cancel Order
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        className="bg-gray-500 p-1 m-1 rounded-lg"
+                        onClick={() => navigate(`/pick/${sales._id}`)}
+                      >
+                        PickList
                       </button>
                     </td>
                   </tr>
