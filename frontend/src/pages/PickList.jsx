@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { NavigationBar } from "../components/NavigationBar";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import jsPDF from "jspdf";
-import "jspdf-autotable"; // Import jsPDF's autoTable plugin
+import PDFTemplate from "../components/PDFTemplate";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 
 const PickList = () => {
   const [item, setItem] = useState({
@@ -56,44 +56,6 @@ const PickList = () => {
     } catch (error) {
       console.log("Error:", error);
     }
-  };
-
-  // PDF Generation logic
-  const generatePDF = () => {
-    const doc = new jsPDF();
-
-    // Add a title
-    doc.text("Picklist Report", 14, 10);
-
-    // Sales data section
-    doc.text("Sales Information", 14, 20);
-    doc.text(`Customer Name: ${salesData.cname || "N/A"}`, 14, 30);
-    doc.text(`Sale Date: ${salesData.odate || "N/A"}`, 14, 40);
-    doc.text(`Total Amount: ${salesData.tamount || "N/A"}`, 14, 50);
-
-    // Picklist table section
-    const pickListData = pickList.map((item) => [
-      item.name,
-      item.unitPrice,
-      item.quantity,
-      (item.unitPrice * item.quantity).toFixed(2),
-    ]);
-
-    doc.autoTable({
-      startY: 60,
-      head: [["Item Name", "Unit Price", "Quantity", "Total"]],
-      body: pickListData,
-    });
-
-    // Add subtotal at the end
-    doc.text(
-      `Subtotal: ${calculateSubtotal()}`,
-      14,
-      doc.lastAutoTable.finalY + 10
-    );
-
-    // Save the PDF
-    doc.save("picklist.pdf");
   };
 
   return (
@@ -216,13 +178,13 @@ const PickList = () => {
 
         {/* Generate PDF Button */}
         <div className="mt-4">
-          <button
-            type="button"
-            onClick={generatePDF} // Trigger PDF generation on click
+          <PDFDownloadLink
+            document={<PDFTemplate salesData={salesData} pickList={pickList} />}
+            fileName="picklist.pdf"
             className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10"
           >
-            Generate Picklist
-          </button>
+            {({ loading }) => (loading ? "Generating PDF..." : "Download PDF")}
+          </PDFDownloadLink>
         </div>
       </div>
     </div>
