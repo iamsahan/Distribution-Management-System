@@ -4,21 +4,51 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import { NavigationBar } from "../components/NavigationBar";
+import { v4 as uuidv4 } from "uuid";
 
 const CreateNewSale = () => {
   const data = [
     {
       id: 12,
-      name: "Cargills",
-      email: "contact@cargills.com",
-      phone: "+94112345678",
+      name: "Elisha Super",
+      email: "elishasupar@gmail.com",
+      phone: "0112345678",
     },
-    { id: 13, name: "Keels", email: "info@keels.lk", phone: "+94112223344" },
+    {
+      id: 13,
+      name: "Sampath Store",
+      email: "info@keels.lk",
+      phone: "0112223344",
+    },
     {
       id: 14,
-      name: "Arpico",
-      email: "support@arpico.com",
-      phone: "+94115556677",
+      name: "Lal Store",
+      email: "lalstores@gmail.com",
+      phone: "0115556677",
+    },
+    {
+      id: 15,
+      name: "Shamal Store",
+      email: "shamal@gmail.com",
+      phone: "0115556677",
+    },
+    {
+      id: 16,
+      name: "Ruhunu Supar",
+      email: "ruhunusupar@gmail.com",
+      phone: "0115556677",
+    },
+    {
+      id: 17,
+      name: "Mahinda Store",
+      email: "mahinda@gmail.com",
+      phone: "0115556677",
+    },
+    {
+      id: 18,
+      name: "Matara Store",
+      email: "support@matarastores.com",
+      phone: "0115556677",
     },
   ];
 
@@ -51,6 +81,7 @@ const CreateNewSale = () => {
     if (selectedCustomer) {
       setFormData({
         ...formData,
+        orderno: generateOrderID(),
         cname: selectedCustomer.name,
         cphone: selectedCustomer.phone,
         cemail: selectedCustomer.email,
@@ -62,6 +93,13 @@ const CreateNewSale = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     validateField(name, value);
+  };
+
+  const generateOrderID = () => {
+    const uniquePart = Math.floor(10000000 + Math.random() * 90000000); // Ensures 8-digit integer
+    const orderID = `${formData.rcode}${uniquePart}`;
+
+    return orderID;
   };
 
   const validateField = (name, value) => {
@@ -112,22 +150,30 @@ const CreateNewSale = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate all fields before submission
+    const newErrors = {};
+    Object.entries(formData).forEach(([key, value]) => {
+      validateField(key, value); // This will validate each field and update the errors object
+    });
+
     if (
-      Object.keys(errors).length === 0 &&
-      Object.values(formData).every((field) => field.trim())
+      Object.keys(errors).length > 0 ||
+      Object.values(formData).some((field) => !field.trim())
     ) {
-      try {
-        await axios.post(`http://localhost:8060/api/sales/add`, formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        swal("Good job!", "Sale Added Successfully!", "success");
-        navigate("/dash");
-      } catch (err) {
-        console.error("Error adding sale:", err);
-        swal("Error", "Failed to add sale. Please try again.", "error");
-      }
-    } else {
       swal("Error", "Please fill out all fields correctly.", "error");
+      return; // Prevent form submission if there are errors
+    }
+
+    try {
+      await axios.post(`http://localhost:8060/api/sales/add`, formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      swal("Good job!", "Sale Added Successfully!", "success");
+      navigate("/dash");
+    } catch (err) {
+      console.error("Error adding sale:", err);
+      swal("Error", "Failed to add sale. Please try again.", "error");
     }
   };
 
@@ -173,7 +219,7 @@ const CreateNewSale = () => {
                   <label className="label required">Customer Phone</label>{" "}
                   <br />
                   <input
-                    type="text"
+                    type="number"
                     className="p-name"
                     placeholder="Customer Phone"
                     name="cphone"
@@ -182,8 +228,7 @@ const CreateNewSale = () => {
                   {!/^(\+94\d{9}|0\d{9})$/.test(formData.cphone) &&
                     formData.cphone && (
                       <p className="text-red-500 text-xs mt-1">
-                        Please enter a valid phone number (e.g., +941111111111
-                        or 0111111111).
+                        Please enter a valid phone number
                       </p>
                     )}
                   <label className="label required">Customer Email</label>{" "}
@@ -235,14 +280,19 @@ const CreateNewSale = () => {
                     <p className="error-text text-red-500">{errors.odate}</p>
                   )}
                   <label className="label required">Status</label> <br />
-                  <input
-                    type="text"
+                  <select
                     className="p-code"
-                    placeholder="Status"
                     name="status"
                     value={formData.status}
                     onChange={handleChange}
-                  />
+                  >
+                    <option value="" disabled>
+                      Select Status
+                    </option>
+                    <option value="invoiced">Invoiced</option>
+                    <option value="open">Open</option>
+                    <option value="picked">Picked</option>
+                  </select>
                   {errors.status && (
                     <p className="error-text text-red-500">{errors.status}</p>
                   )}
@@ -266,7 +316,7 @@ const CreateNewSale = () => {
                   <label className="label required">Distributor Phone</label>
                   <br />
                   <input
-                    type="text"
+                    type="number"
                     className="p-code"
                     placeholder="Distributor Phone"
                     name="dphone"

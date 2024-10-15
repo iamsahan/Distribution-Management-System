@@ -4,6 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import PDFTemplate from "../components/PDFTemplate";
 import { PDFDownloadLink } from "@react-pdf/renderer";
+import { init, send } from "emailjs-com";
+import Swal from "sweetalert2";
 
 const PickList = () => {
   const [item, setItem] = useState({
@@ -14,6 +16,8 @@ const PickList = () => {
   const [pickList, setPickList] = useState([]);
   const [salesData, setSalesData] = useState({});
   const { id } = useParams();
+
+  init("jm1C0XkEa3KYwvYK0");
 
   useEffect(() => {
     const fetchSales = async () => {
@@ -55,6 +59,31 @@ const PickList = () => {
       setItem({ name: "", quantity: "", unitPrice: "" });
     } catch (error) {
       console.log("Error:", error);
+    }
+  };
+
+  const handleEmailSend = async () => {
+    const formattedPickList = pickList
+      .map(
+        (item) =>
+          `${item.name}: ${item.quantity} x $${item.unitPrice} = $${(
+            item.quantity * item.unitPrice
+          ).toFixed(2)}`
+      )
+      .join("\n");
+
+    try {
+      await send("service_fjpvjh9", "template_1x528d6", {
+        to_email: salesData.demail,
+        service_date_time: salesData.odate,
+        picklist: formattedPickList,
+        subtotal: calculateSubtotal(),
+      });
+      console.log("Email sent sucessfully!");
+      Swal.fire("Sent!", "The picklist has been sent.", "success");
+    } catch (error) {
+      console.error("Error sending email:", error);
+      Swal.fire("Error", "An error occurred while sending picklist.", "error");
     }
   };
 
@@ -181,10 +210,17 @@ const PickList = () => {
           <PDFDownloadLink
             document={<PDFTemplate salesData={salesData} pickList={pickList} />}
             fileName="picklist.pdf"
-            className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10"
+            className="bg-lime-500 text-black mt-1 ml-2 inline-block px-8 py-2.5 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md mr-5"
           >
             {({ loading }) => (loading ? "Generating PDF..." : "Download PDF")}
           </PDFDownloadLink>
+
+          <button
+            className="bg-violet-500 text-black mt-1 ml-2 inline-block px-8 py-2.5 text-sm uppercase rounded-full shadow-lg transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-px active:shadow-md mr-5"
+            onClick={handleEmailSend}
+          >
+            Send Picklist to Distributor
+          </button>
         </div>
       </div>
     </div>

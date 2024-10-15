@@ -2,9 +2,12 @@ import mongoose from "mongoose";
 
 const salesSchema = new mongoose.Schema(
   {
+    orderno: {
+      type: String,
+    },
     cname: {
       type: String,
-      required: [true, "Transaction ID is Required!"],
+      required: [true, "cname is Required!"],
     },
     ccode: {
       type: String,
@@ -21,6 +24,7 @@ const salesSchema = new mongoose.Schema(
     odate: {
       type: String,
     },
+
     status: {
       type: String,
       default: "Pending",

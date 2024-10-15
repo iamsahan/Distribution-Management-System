@@ -11,15 +11,45 @@ const SalesDashboard = () => {
   const data = [
     {
       id: 12,
-      name: "Cargills",
+      name: "Elisha Super",
+      email: "elishasupar@gmail.com",
+      phone: "0112345678",
     },
     {
       id: 13,
-      name: "Keels",
+      name: "Sampath Store",
+      email: "info@keels.lk",
+      phone: "0112223344",
     },
     {
       id: 14,
-      name: "Arpico",
+      name: "Lal Store",
+      email: "lalstores@gmail.com",
+      phone: "0115556677",
+    },
+    {
+      id: 15,
+      name: "Shamal Store",
+      email: "shamal@gmail.com",
+      phone: "0115556677",
+    },
+    {
+      id: 16,
+      name: "Ruhunu Supar",
+      email: "ruhunusupar@gmail.com",
+      phone: "0115556677",
+    },
+    {
+      id: 17,
+      name: "Mahinda Store",
+      email: "mahinda@gmail.com",
+      phone: "0115556677",
+    },
+    {
+      id: 18,
+      name: "Matara Store",
+      email: "support@matarastores.com",
+      phone: "0115556677",
     },
   ];
   const [sales, setSales] = useState([]);
@@ -208,6 +238,13 @@ const SalesDashboard = () => {
                   value={salesDateTo}
                   onChange={(e) => setSalesDateTo(e.target.value)}
                 />
+                {salesDateTo <= salesDateFrom ? (
+                  <p className="text-red-500 text-xs mt-1">
+                    FromDate should grater than to ToDate
+                  </p>
+                ) : (
+                  ""
+                )}
               </div>
               <div>
                 <label>Customer:</label>
@@ -259,7 +296,7 @@ const SalesDashboard = () => {
                   <th className="p-2">Distributor</th>
                   <th className="p-2">Customer Name</th>
                   <th className="p-2">Route Code</th>
-                  <th className="p-2">Total Net Amount</th>
+                  <th className="p-2">Amount</th>
                   <th className="p-2">Status</th>
                   <th className="p-2">Update</th>
                   <th className="p-2">Delete</th>
@@ -269,7 +306,7 @@ const SalesDashboard = () => {
               <tbody>
                 {filteredSales.map((sales) => (
                   <tr key={sales._id} className=" w-fit">
-                    <td className="p-4">{sales._id}</td>
+                    <td className="p-4">{sales.orderno}</td>
                     <td className="p-4">{sales.odate}</td>
                     <td className="p-4">{sales.distibutor}</td>
                     <td className="p-4">{sales.cname}</td>
